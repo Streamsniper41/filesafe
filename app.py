@@ -17,12 +17,17 @@ def root():
           </head>
           <body>
             <div align="center">
-              <h1>File Vualt</h1>
-              <p><strong>CWD: </strong>{{ current_working_directory }}</p>
+              <h1>File Vault</h1>
+              <p><strong>CWD: </strong>{{ current_working_directory[38:] }}</p>
             </div>
             
             
             <ul>
+             <form action="/touch">
+                <input type="submit" value="New file"/>
+                <input name="filename" type="text" value="new_file.txt"/>
+              </form>
+
               <form action="/md">
                 <input type="submit" value="New folder"/>
                 <input name="folder" type="text" value="new_folder"/>
@@ -31,7 +36,7 @@ def root():
               {% for item in file_list[0: -1] %}
                 {% if '.' not in item%}
                   <li><strong><a href="/cd?path={{current_working_directory + '/' + item}}">{{item}}</a></strong><a href="/rm?dir={{item}}"> X</a></li>
-                {% elif '.txt' in item or '.py' in item or '.json' in item %}
+                {% elif '.txt' in item or '.py' in item or '.json' in item or '.html' in item %}
                   <li><strong><a href="/view?file={{current_working_directory + '/' + item}}">{{item}}</a></strong></li>
                 {% else %}
                   <li>{{item}}</li>
@@ -58,8 +63,17 @@ def md():
     # create new folder
     os.mkdir(request.args.get('folder'))
     
-    # redirect to fole manager
+    # redirect to file manager
     return redirect('/')
+
+    # handale 'make file' command
+@app.route('/touch')
+def touch():
+    # create file 
+    open(request.args.get('filename'), 'a+').close()
+    #redirect to file manager
+    return redirect('/')
+
 
 # handle 'make directory' command
 @app.route('/rm')
