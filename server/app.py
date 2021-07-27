@@ -52,7 +52,7 @@ def root():
                 {% if '.' not in item%}
                   <li><strong><a href="/cd?path={{current_working_directory + '/' + item}}">{{item}}</a></strong><a href="/rm?dir={{item}}"> X</a></li>
                 {% elif '.txt' in item or '.py' in item or '.json' in item or '.html' in item %}
-                  <li><strong><a href="/view?file={{current_working_directory + '/' + item}}">{{item}}</a></strong></li>
+                  <li><strong><a href="/view?file={{current_working_directory + '/' + item}}">{{item}}</a></strong>><a href="rmfile?filename={{item}}"> X</a></li>
                 {% else %}
                   <li>{{item}}</li>
                 {% endif%}
@@ -143,6 +143,15 @@ def upload_file():
 def download_file(name):
     return send_from_directory(app.config["UPLOAD_FOLDER"], name)
 
+    # handle 'make directory' command
+
+
+@app.route('/rmfile')
+def rmfile():
+    os.remove(os.getcwd() + '/' + request.args.get('filename'))
+    return redirect("/")
+
+
 # @app.route("/1")
 # def test():
 #     f = open('test.txt', 'r')
@@ -161,7 +170,6 @@ def download_file(name):
 # @app.route('/uploads/<path>', methods=['GET', 'POST'])
 # def download(path):
 #     return f"hello {path}!"
-
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=80, debug=True)
